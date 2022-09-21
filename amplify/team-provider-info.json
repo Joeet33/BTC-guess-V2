@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-btcguessgame-dev-165312-authRole",
+      "UnauthRoleArn": "arn:aws:iam::198600712012:role/amplify-btcguessgame-dev-165312-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::198600712012:role/amplify-btcguessgame-dev-165312-authRole",
+      "Region": "eu-west-2",
+      "DeploymentBucketName": "amplify-btcguessgame-dev-165312-deployment",
+      "UnauthRoleName": "amplify-btcguessgame-dev-165312-unauthRole",
+      "StackName": "amplify-btcguessgame-dev-165312",
+      "StackId": "arn:aws:cloudformation:eu-west-2:198600712012:stack/amplify-btcguessgame-dev-165312/80dc5fa0-39c5-11ed-9910-0ae36c4f8bfe",
+      "AmplifyAppId": "d2ga0q38hqjvxl"
+    },
+    "categories": {
+      "auth": {
+        "btcguessgame5164a073": {}
+      }
+    }
+  }
+}

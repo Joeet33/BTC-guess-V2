@@ -1,0 +1,11 @@
+{
+  "AppSyncApiName": "btcguessgame",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authbtcguessgame5164a073",
+      "Outputs.UserPoolId"
+    ]
+  }
+}
