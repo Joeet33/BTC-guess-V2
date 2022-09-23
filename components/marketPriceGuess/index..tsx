@@ -8,7 +8,7 @@ import {
   createScore as createScoreMutation,
 } from "../../src/graphql/mutations.js";
 import { listScores } from "../../src/graphql/queries.js";
-// import { ScoresProps } from "../interfaces/scoresProps";
+import { ScoresProps } from "../interfaces/scoresProps";
 import { withAuthenticator } from "@aws-amplify/ui-react";
 
 const MarketPriceGuess = ({ user }: any) => {
@@ -16,21 +16,21 @@ const MarketPriceGuess = ({ user }: any) => {
   const [oldPrice, setOldPrice] = useState<ListingProps>();
   const [newPriceUp, setNewPriceUp] = useState<ListingProps>();
   const [newPriceDown, setNewPriceDown] = useState<ListingProps>();
-  const [scoresData, setScoresData] = useState<any>();
-  const [id, setId] = useState<any>();
-  const [scoreUp, setScoreUp] = useState<any>();
-  const [scoreDown, setScoreDown] = useState<any>();
+  const [scoresData, setScoresData] = useState<ScoresProps[]>();
+  const [id, setId] = useState<string>();
+  const [scoreUp, setScoreUp] = useState<number>();
+  const [scoreDown, setScoreDown] = useState<number>();
 
   const ownerScore =
     scoresData &&
-    scoresData.map((scores: any) => (
+    scoresData.map((scores: ScoresProps) => (
       <div key={scores.id}>
         {user.username === scores.owner ? <>Score: {scores.score}</> : null}
       </div>
     ));
   useEffect(() => {
     scoresData &&
-      scoresData.map((scores: any) => {
+      scoresData.map((scores: ScoresProps) => {
         user.username === scores.owner ? setScoreUp(scores.score + 1) : null;
         user.username === scores.owner ? setScoreDown(scores.score - 1) : null;
         user.username === scores.owner ? setId(scores.id) : null;
