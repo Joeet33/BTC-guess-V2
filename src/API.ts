@@ -5,10 +5,12 @@
 export type CreateScoreInput = {
   id?: string | null,
   score: number,
+  owner: string,
 };
 
 export type ModelScoreConditionInput = {
   score?: ModelIntInput | null,
+  owner?: ModelStringInput | null,
   and?: Array< ModelScoreConditionInput | null > | null,
   or?: Array< ModelScoreConditionInput | null > | null,
   not?: ModelScoreConditionInput | null,
@@ -40,33 +42,7 @@ export enum ModelAttributeTypes {
 }
 
 
-export type Score = {
-  __typename: "Score",
-  id: string,
-  score: number,
-  createdAt: string,
-  updatedAt: string,
-  owner?: string | null,
-};
-
-export type UpdateScoreInput = {
-  id: string,
-  score?: number | null,
-};
-
-export type DeleteScoreInput = {
-  id: string,
-};
-
-export type ModelScoreFilterInput = {
-  id?: ModelIDInput | null,
-  score?: ModelIntInput | null,
-  and?: Array< ModelScoreFilterInput | null > | null,
-  or?: Array< ModelScoreFilterInput | null > | null,
-  not?: ModelScoreFilterInput | null,
-};
-
-export type ModelIDInput = {
+export type ModelStringInput = {
   ne?: string | null,
   eq?: string | null,
   le?: string | null,
@@ -92,6 +68,50 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
+export type Score = {
+  __typename: "Score",
+  id: string,
+  score: number,
+  owner: string,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type UpdateScoreInput = {
+  id: string,
+  score?: number | null,
+  owner?: string | null,
+};
+
+export type DeleteScoreInput = {
+  id: string,
+};
+
+export type ModelScoreFilterInput = {
+  id?: ModelIDInput | null,
+  score?: ModelIntInput | null,
+  owner?: ModelStringInput | null,
+  and?: Array< ModelScoreFilterInput | null > | null,
+  or?: Array< ModelScoreFilterInput | null > | null,
+  not?: ModelScoreFilterInput | null,
+};
+
+export type ModelIDInput = {
+  ne?: string | null,
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  contains?: string | null,
+  notContains?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+  size?: ModelSizeInput | null,
+};
+
 export type ModelScoreConnection = {
   __typename: "ModelScoreConnection",
   items:  Array<Score | null >,
@@ -108,9 +128,9 @@ export type CreateScoreMutation = {
     __typename: "Score",
     id: string,
     score: number,
+    owner: string,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -124,9 +144,9 @@ export type UpdateScoreMutation = {
     __typename: "Score",
     id: string,
     score: number,
+    owner: string,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -140,9 +160,9 @@ export type DeleteScoreMutation = {
     __typename: "Score",
     id: string,
     score: number,
+    owner: string,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -155,9 +175,9 @@ export type GetScoreQuery = {
     __typename: "Score",
     id: string,
     score: number,
+    owner: string,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -174,9 +194,9 @@ export type ListScoresQuery = {
       __typename: "Score",
       id: string,
       score: number,
+      owner: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null >,
     nextToken?: string | null,
   } | null,
@@ -191,9 +211,9 @@ export type OnCreateScoreSubscription = {
     __typename: "Score",
     id: string,
     score: number,
+    owner: string,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -206,9 +226,9 @@ export type OnUpdateScoreSubscription = {
     __typename: "Score",
     id: string,
     score: number,
+    owner: string,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -221,8 +241,8 @@ export type OnDeleteScoreSubscription = {
     __typename: "Score",
     id: string,
     score: number,
+    owner: string,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };

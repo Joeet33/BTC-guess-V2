@@ -2,68 +2,103 @@ import { useEffect, useState } from "react";
 import { ListingProps } from "../interfaces/listingProps";
 import { LatestPrice } from "../latestPrice";
 import { Timer } from "../timer";
-// import { API } from "aws-amplify";
-// import { updateScore as updateScoreMutation } from "../../src/graphql/mutations.js";
-// import { listScores } from "../../src/graphql/queries.js";
-import { ScoresProps } from "../interfaces/scoresProps";
+import { API } from "aws-amplify";
+import { updateScore as updateScoreMutation } from "../../src/graphql/mutations.js";
+import { listScores } from "../../src/graphql/queries.js";
+// import { ScoresProps } from "../interfaces/scoresProps";
+import { withAuthenticator } from "@aws-amplify/ui-react";
 
-export const MarketPriceGuess = () => {
+const MarketPriceGuess = ({ user }: any) => {
   const [isDisabled, setIsDisabled] = useState(false);
   const [oldPrice, setOldPrice] = useState<ListingProps>();
   const [newPriceUp, setNewPriceUp] = useState<ListingProps>();
   const [newPriceDown, setNewPriceDown] = useState<ListingProps>();
-  const [scoresData, setScoresData] = useState<ScoresProps[]>();
+  const [scoresData, setScoresData] = useState<any>();
+  const [id, setId] = useState<any>();
+  const [scoreUp, setScoreUp] = useState<any>();
+  const [scoreDown, setScoreDown] = useState<any>();
 
-  // useEffect(() => {
-  //   fetchScores();
-  // }, []);
+  const ownerScore =
+    scoresData &&
+    scoresData.map((scores: any) => (
+      <div key={scores.id}>
+        {user.username === scores.owner ? <>Score: {scores.score}</> : null}
+      </div>
+    ));
+  useEffect(() => {
+    scoresData &&
+      scoresData.map((scores: any) => {
+        user.username === scores.owner ? setScoreUp(scores.score + 1) : null;
+        user.username === scores.owner ? setScoreDown(scores.score - 1) : null;
+        user.username === scores.owner ? setId(scores.id) : null;
+      });
+  }, [scoresData]);
 
-  // async function fetchScores() {
-  //   const apiData: any = await API.graphql({ query: listScores });
-  //   setScoresData(apiData.data.listScores.items);
-  // }
+  useEffect(() => {
+    fetchScores();
+  }, []);
 
-  // async function updateScoreWinning() {
+  async function fetchScores() {
+    const apiData: any = await API.graphql({ query: listScores });
+    setScoresData(apiData.data.listScores.items);
+  }
+
+  // async function createScore() {
+  //   if()
   //   await API.graphql({
   //     query: updateScoreMutation,
   //     variables: {
   //       input: {
-  //         id: scoresData && scoresData[0]?.id,
-  //         score: scoresData && scoresData[0].score + 1,
-  //         _version: scoresData && scoresData[0]._version,
+  //         id: scoresData && scoresData?.id,
+  //         score: scoresData && scoresData.score + 1,
+  //         owner: user.username,
   //       },
   //     },
   //   });
   //   fetchScores();
   // }
 
-  // const updateScoreLosing = async () => {
-  //   await API.graphql({
-  //     query: updateScoreMutation,
-  //     variables: {
-  //       input: {
-  //         id: scoresData && scoresData[0]?.id,
-  //         score: scoresData && scoresData[0].score - 1,
-  //         _version: scoresData && scoresData[0]._version,
-  //       },
-  //     },
-  //   });
-  //   fetchScores();
-  // };
+  async function updateScoreWinning() {
+    await API.graphql({
+      query: updateScoreMutation,
+      variables: {
+        input: {
+          id: id,
+          score: scoreUp,
+          owner: user.username,
+        },
+      },
+    });
+    fetchScores();
+  }
 
-  // const resetScore = async () => {
-  //   await API.graphql({
-  //     query: updateScoreMutation,
-  //     variables: {
-  //       input: {
-  //         id: scoresData && scoresData[0]?.id,
-  //         score: 0,
-  //         _version: scoresData && scoresData[0]._version,
-  //       },
-  //     },
-  //   });
-  //   fetchScores();
-  // };
+  const updateScoreLosing = async () => {
+    await API.graphql({
+      query: updateScoreMutation,
+      variables: {
+        input: {
+          id: id,
+          score: scoreDown,
+          owner: user.username,
+        },
+      },
+    });
+    fetchScores();
+  };
+
+  const resetScore = async () => {
+    await API.graphql({
+      query: updateScoreMutation,
+      variables: {
+        input: {
+          id: scoresData && scoresData[0]?.id,
+          score: 0,
+          _version: scoresData && scoresData[0]._version,
+        },
+      },
+    });
+    fetchScores();
+  };
 
   const fetchPrice = async () => {
     const req = await fetch(
@@ -107,29 +142,31 @@ export const MarketPriceGuess = () => {
     setTimeout(() => fetchNewPriceDown(), 60000);
   };
 
-  // useEffect(() => {
-  //   if (newPriceUp && newPriceUp && oldPrice && oldPrice) {
-  //     if (newPriceUp.price > oldPrice.price) {
-  //       updateScoreWinning();
-  //     }
+  useEffect(() => {
+    if (newPriceUp && newPriceUp && oldPrice && oldPrice) {
+      if (newPriceUp.price > oldPrice.price) {
+        updateScoreWinning();
+      }
 
-  //     if (newPriceUp.price < oldPrice.price) {
-  //       updateScoreLosing();
-  //     }
-  //   }
-  // }, [newPriceUp]);
+      if (newPriceUp.price < oldPrice.price) {
+        updateScoreLosing();
+      }
+    }
+  }, [newPriceUp]);
 
-  // useEffect(() => {
-  //   if (newPriceDown && newPriceDown && oldPrice && oldPrice) {
-  //     if (newPriceDown.price > oldPrice.price) {
-  //       updateScoreLosing();
-  //     }
+  useEffect(() => {
+    if (newPriceDown && newPriceDown && oldPrice && oldPrice) {
+      if (newPriceDown.price > oldPrice.price) {
+        updateScoreLosing();
+      }
 
-  //     if (newPriceDown.price < oldPrice.price) {
-  //       updateScoreWinning();
-  //     }
-  //   }
-  // }, [newPriceDown]);
+      if (newPriceDown.price < oldPrice.price) {
+        updateScoreWinning();
+      }
+    }
+  }, [newPriceDown]);
+
+  console.log(id);
 
   return (
     <div className="border border-solid border-black rounded p-8">
@@ -141,7 +178,7 @@ export const MarketPriceGuess = () => {
         <div className="flex flex-col">
           <div className="flex flex-col">
             <LatestPrice />
-            <div>Score: {scoresData && scoresData[0].score}</div>
+            {ownerScore}
           </div>
           <div className="flex flex-col mt-auto">
             <div className="border border-solid border-black rounded p-2 my-2">
@@ -186,7 +223,7 @@ export const MarketPriceGuess = () => {
           </button>
           <button
             className="border border-solid border-black rounded"
-            // onClick={resetScore}
+            onClick={resetScore}
           >
             Reset Score
           </button>
@@ -195,3 +232,5 @@ export const MarketPriceGuess = () => {
     </div>
   );
 };
+
+export default withAuthenticator(MarketPriceGuess);

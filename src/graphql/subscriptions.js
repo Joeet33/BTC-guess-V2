@@ -6,9 +6,9 @@ export const onCreateScore = /* GraphQL */ `
     onCreateScore(owner: $owner) {
       id
       score
+      owner
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -17,9 +17,9 @@ export const onUpdateScore = /* GraphQL */ `
     onUpdateScore(owner: $owner) {
       id
       score
+      owner
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -28,9 +28,9 @@ export const onDeleteScore = /* GraphQL */ `
     onDeleteScore(owner: $owner) {
       id
       score
+      owner
       createdAt
       updatedAt
-      owner
     }
   }
 `;

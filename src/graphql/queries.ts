@@ -7,9 +7,9 @@ export const getScore = /* GraphQL */ `
     getScore(id: $id) {
       id
       score
+      owner
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -23,9 +23,9 @@ export const listScores = /* GraphQL */ `
       items {
         id
         score
+        owner
         createdAt
         updatedAt
-        owner
       }
       nextToken
     }
