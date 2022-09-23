@@ -3,7 +3,10 @@ import { ListingProps } from "../interfaces/listingProps";
 import { LatestPrice } from "../latestPrice";
 import { Timer } from "../timer";
 import { API } from "aws-amplify";
-import { updateScore as updateScoreMutation } from "../../src/graphql/mutations.js";
+import {
+  updateScore as updateScoreMutation,
+  createScore as createScoreMutation,
+} from "../../src/graphql/mutations.js";
 import { listScores } from "../../src/graphql/queries.js";
 // import { ScoresProps } from "../interfaces/scoresProps";
 import { withAuthenticator } from "@aws-amplify/ui-react";
@@ -43,20 +46,20 @@ const MarketPriceGuess = ({ user }: any) => {
     setScoresData(apiData.data.listScores.items);
   }
 
-  // async function createScore() {
-  //   if()
-  //   await API.graphql({
-  //     query: updateScoreMutation,
-  //     variables: {
-  //       input: {
-  //         id: scoresData && scoresData?.id,
-  //         score: scoresData && scoresData.score + 1,
-  //         owner: user.username,
-  //       },
-  //     },
-  //   });
-  //   fetchScores();
-  // }
+  async function createScore() {
+    if (id == undefined) {
+      await API.graphql({
+        query: createScoreMutation,
+        variables: {
+          input: {
+            score: 0,
+            owner: user.username,
+          },
+        },
+      });
+    }
+    fetchScores();
+  }
 
   async function updateScoreWinning() {
     await API.graphql({
@@ -91,9 +94,9 @@ const MarketPriceGuess = ({ user }: any) => {
       query: updateScoreMutation,
       variables: {
         input: {
-          id: scoresData && scoresData[0]?.id,
+          id: id,
           score: 0,
-          _version: scoresData && scoresData[0]._version,
+          owner: user.username,
         },
       },
     });
@@ -131,6 +134,7 @@ const MarketPriceGuess = ({ user }: any) => {
     setNewPriceDown(undefined);
     fetchPrice();
     setTimeout(() => fetchNewPriceUp(), 60000);
+    createScore();
   };
 
   const handleOnClickDown = () => {
@@ -140,6 +144,7 @@ const MarketPriceGuess = ({ user }: any) => {
     setNewPriceDown(undefined);
     fetchPrice();
     setTimeout(() => fetchNewPriceDown(), 60000);
+    createScore();
   };
 
   useEffect(() => {
@@ -166,8 +171,6 @@ const MarketPriceGuess = ({ user }: any) => {
     }
   }, [newPriceDown]);
 
-  console.log(id);
-
   return (
     <div className="border border-solid border-black rounded p-8">
       <div className="flex flex-col justify-center font-bold pb-4">
@@ -178,7 +181,7 @@ const MarketPriceGuess = ({ user }: any) => {
         <div className="flex flex-col">
           <div className="flex flex-col">
             <LatestPrice />
-            {ownerScore}
+            <div>{id == undefined ? <div>Score: 0</div> : ownerScore}</div>
           </div>
           <div className="flex flex-col mt-auto">
             <div className="border border-solid border-black rounded p-2 my-2">
