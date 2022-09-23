@@ -21,19 +21,14 @@ const MarketPriceGuess = ({ user }: any) => {
   const [scoreUp, setScoreUp] = useState<number>();
   const [scoreDown, setScoreDown] = useState<number>();
 
-  const ownerScore =
-    scoresData &&
-    scoresData.map((scores: ScoresProps) => (
-      <div key={scores.id}>
-        {user.username === scores.owner ? <>Score: {scores.score}</> : null}
-      </div>
-    ));
   useEffect(() => {
     scoresData &&
       scoresData.map((scores: ScoresProps) => {
-        user.username === scores.owner ? setScoreUp(scores.score + 1) : null;
-        user.username === scores.owner ? setScoreDown(scores.score - 1) : null;
-        user.username === scores.owner ? setId(scores.id) : null;
+        if (user.username === scores.owner) {
+          setScoreUp(scores.score + 1);
+          setScoreDown(scores.score - 1);
+          setId(scores.id);
+        }
       });
   }, [scoresData]);
 
@@ -181,7 +176,14 @@ const MarketPriceGuess = ({ user }: any) => {
         <div className="flex flex-col">
           <div className="flex flex-col">
             <LatestPrice />
-            <div>{id == undefined ? <div>Score: 0</div> : ownerScore}</div>
+            {scoresData &&
+              scoresData.map((scores: ScoresProps) => (
+                <div key={scores.id}>
+                  {user.username === scores.owner ? (
+                    <>Score: {scores.score}</>
+                  ) : null}
+                </div>
+              ))}
           </div>
           <div className="flex flex-col mt-auto">
             <div className="border border-solid border-black rounded p-2 my-2">
